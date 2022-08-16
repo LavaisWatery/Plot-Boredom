@@ -3,6 +3,8 @@ from turtle import title
 import matplotlib.pyplot as plt
 from random import randrange
 
+import json
+from util.plot import Plot
 import numpy as np
 
 t = np.arange(0, 10, 0.01)
@@ -34,11 +36,29 @@ for ind in range(20):
      ran = randrange(100)
      ranY.append(ran)
 
-     print("Appending " + str(ind) + ", " + str(ran))
-
-
-
 plt.plot(ranX, ranY, label="Random Data", color='black', linestyle='dashed')
+
+# Created plots
+plots = []
+file = open("data/data.dat", "r")
+data = json.loads(file.read())
+
+for plotStr in data:
+    plotDict = json.loads(plotStr)
+    plot = Plot(plotDict['name'])
+    data = {
+        'name' : plotDict['name'], # I could do this better lol
+        'plotX' : plotDict['plotX'],
+        'plotY' : plotDict['plotY']
+    }
+    plot.data = data
+    plot.plotX = plotDict['plotX']
+    plot.plotY = plotDict['plotY']
+
+    plots.append(plot)
+
+for plot in plots:
+     plt.plot(plot.plotX, plot.plotY, label=plot.name)
 
 plt.xlabel('x - axis')
 plt.ylabel('y - axis')
@@ -47,13 +67,3 @@ plt.title('Test Graph')
 plt.legend()
   
 plt.show()
-
-# t = np.arange(0, 10, 0.01)
-
-# ax1 = plt.subplot(211)
-# ax1.plot(t, np.sin(2*np.pi*t))
-
-# ax2 = plt.subplot(212, sharex=ax1)
-# ax2.plot(t, np.sin(4*np.pi*t))
-
-# plt.show()

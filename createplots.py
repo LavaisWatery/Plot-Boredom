@@ -1,6 +1,6 @@
 # Cloned from my old menu
 
-from util.user import User
+from util.plot import Plot
 from util.menu import MenuSelection
 import json
 import random # for random strings
@@ -37,25 +37,34 @@ def main():
 def create():
     print("Create user function:")
 
-    name = input("Input user name: ")
-    age = input("Input " + name + "'s age: ")
-    initial_user = User(name, age)
-    users.append(initial_user)
+    name = input("Input plot name: ")
+    initial_user = Plot(name)
+    plots.append(initial_user)
 
     while(True):
-        comment = input("Input a comment or hit -1 to get to menu\n")
+        comment = input("Input a plot coord (0,0) or hit -1 to get to menu\n")
+       
         if comment == "-1":
             break
         
-        initial_user.comments.add(comment)
+        plotSplit = comment.split(",")
+        if len(plotSplit) >= 2:
+            plotX = int(plotSplit[0])
+            plotY = int(plotSplit[1])
+        else:
+            plotX = len(initial_user.plotX) + 1
+            plotY = plotSplit[0]
+
+        initial_user.plotX.append(plotX)
+        initial_user.plotY.append(plotY)
         
     print("Created user", initial_user.toStr())
 
     # test
-    with open('data.dat', 'w') as outfile:
+    with open('data/data.dat', 'w') as outfile:
         data = []
 
-        for user in users:
+        for user in plots:
             data.append(user.toJSON())
         
         outfile.write(json.dumps(data, indent=4))
@@ -65,7 +74,7 @@ def create():
     return False
 
 def list():
-    for user in users:
+    for user in plots:
         print(user.toStr())
 
     return False
@@ -74,24 +83,32 @@ def delete():
     print("Delete user function")
     pos = 0
 
-    for user in users:
+    for user in plots:
         print(str(pos) + ". " + user.toStr())
 
     index = input("Input the user index to delete")
 
-    users.remove(users[index])
+    plots.remove(plots[index])
 
     return False
 
 implCTRLHandle()
-users = []
+plots = []
 
 file = open("data/data.dat", "r")
 data = json.loads(file.read())
 
-for userStr in data:
-    userDict = json.loads(userStr)
-    users.append(User(userDict['name'], userDict['age']))
+for plotStr in data:
+    plotDict = json.loads(plotStr)
+    plot = Plot(plotDict['name'])
+    data = {
+        'name' : plotDict['name'], # I could do this better lol
+        'plotX' : plotDict['plotX'],
+        'plotY' : plotDict['plotY']
+    }
+    plot.data = data
+
+    plots.append(plot)
 
 mainSelection = MenuSelection("", main)
 createSelection = MenuSelection("Create plot!", create)
