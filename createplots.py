@@ -35,11 +35,11 @@ def main():
     return True
 
 def create():
-    print("Create user function:")
+    print("Create plot function:")
 
     name = input("Input plot name: ")
-    initial_user = Plot(name)
-    plots.append(initial_user)
+    initial_plot = Plot(name)
+    plots.append(initial_plot)
 
     while(True):
         comment = input("Input a plot coord (0,0) or hit -1 to get to menu\n")
@@ -52,41 +52,41 @@ def create():
             plotX = int(plotSplit[0])
             plotY = int(plotSplit[1])
         else:
-            plotX = len(initial_user.plotX) + 1
+            plotX = len(initial_plot.plotX) + 1
             plotY = plotSplit[0]
 
-        initial_user.plotX.append(plotX)
-        initial_user.plotY.append(plotY)
+        initial_plot.plotX.append(plotX)
+        initial_plot.plotY.append(plotY)
         
-    print("Created user", initial_user.toStr())
+    print("Created plot ", initial_plot.toStr())
 
     # test
     with open('data/data.dat', 'w') as outfile:
         data = []
 
-        for user in plots:
-            data.append(user.toJSON())
+        for plot in plots:
+            data.append(plot.toJSON())
         
         outfile.write(json.dumps(data, indent=4))
 
-    print("Wrote ", initial_user.toJSON())
+    print("Wrote ", initial_plot.toJSON())
 
     return False
 
 def list():
-    for user in plots:
-        print(user.toStr())
+    for plot in plots:
+        print(plot.toStr())
 
     return False
 
 def delete():
-    print("Delete user function")
+    print("Delete plot function")
     pos = 0
 
-    for user in plots:
-        print(str(pos) + ". " + user.toStr())
+    for plot in plots:
+        print(str(pos) + ". " + plot.toStr())
 
-    index = input("Input the user index to delete")
+    index = input("Input the plot index to delete")
 
     plots.remove(plots[index])
 
